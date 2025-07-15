@@ -50,6 +50,12 @@ def snoc : Ctxt Ty → Ty → Ctxt Ty :=
   -- fun tl hd => do return hd :: (← tl)
   fun tl hd => hd :: tl
 
+@[match_pattern]
+def snocList : Ctxt Ty → List Ty → Ctxt Ty :=
+  fun tl lhd => match lhd with
+  | [] => tl
+  | x :: xs => x :: snocList tl xs
+
 /-- Turn a list of types into a context -/
 @[coe, simp]
 def ofList : List Ty → Ctxt Ty :=

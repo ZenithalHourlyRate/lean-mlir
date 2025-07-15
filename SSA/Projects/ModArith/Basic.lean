@@ -84,6 +84,10 @@ inductive Op (q : ℕ) where
 | mul : Op q        -- (modLike, modLike) → modLike
 | const (ty : Ty q) (c : ⟦ty⟧) : Op q  -- produce a constant
 
+inductive OpGen where
+| opaque : OpGen
+-- TODO: make it OpGen q
+
 /--
 For each operation, we specify its input `sig` (a list of
 types) and its `outTy` (the output type).
@@ -101,6 +105,14 @@ def Op.outTy : Op q → Ty q
 | .sub         => Ty.modLike
 | .mul         => Ty.modLike
 | .const ty _   => ty
+
+@[simp, reducible]
+def OpGen.sig : OpGen → List (Ty q)
+| .opaque            => [Ty.modLike]
+
+@[simp, reducible]
+def OpGen.outTys : OpGen → List (Ty q)
+| .opaque         => [Ty.modLike]
 
 /-- Put them together into a `Signature`. -/
 @[simp, reducible]
@@ -138,3 +150,15 @@ denote
   | .const _ c, _, _ =>
       -- A constant
       c
+
+class GenImpl where
+  denote : (opGen : OpGen) → List (Ty q) →
+    List (Op q) × List (Ty q)
+-- List (Ty q) is actually OpGen.sig opGen...make use of toType
+-- Or Com × List (Ty q) ???
+
+noncomputable instance (q : ℕ) [Fact (q > 1)] : GenImpl where
+denote
+  | .opaque, args =>
+    -- Build Com/Expr here
+    sorry

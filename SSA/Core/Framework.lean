@@ -161,6 +161,10 @@ inductive Expr : (Γ : Ctxt d.Ty) → (eff : EffectKind) → (ty : d.Ty) → Typ
     (regArgs : HVector (fun t : Ctxt d.Ty × d.Ty => Com t.1 .impure t.2)
       (DialectSignature.regSig op)) : Expr Γ eff ty
 
+--inductive ExprGen : (Γ : Ctxt d.Ty) → (eff : EffectKind) → (tys : List d.Ty) → Type where
+  -- | mk {Γ} {tys} (opGen : d.OpGen)
+  --   (tys_eq : tys = DialectSignature.outTys opGen)
+  --   (args : HVector (Var Γ) <| DialectSignature.sig opGen) : ExprGen Γ eff tys
 
 /-- A very simple intrinsically typed program: a sequence of let bindings.
 Note that the `EffectKind` is uniform: if a `Com` is `pure`, then the expression
@@ -171,6 +175,7 @@ inductive Com : Ctxt d.Ty → EffectKind → d.Ty → Type where
   | ret {eff : EffectKind} (v : Var Γ t) : Com Γ eff t
   | var (e : Expr Γ eff α) (body : Com (Γ.snoc α) eff β) : Com Γ eff β
 end
+  -- | varGen (e : ExprGen Γ eff l) (body : Com (Γ.snocList l) eff β) : Com Γ eff β
 
 /-- `Lets d Γ_in Γ_out` is a sequence of lets which are well-formed under
 context `Γ_out` and result in context `Γ_in`. -/
